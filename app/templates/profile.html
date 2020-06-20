@@ -1,0 +1,221 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Profile</title>
+    <script src="https://use.fontawesome.com/9ec2186b0f.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href={% static 'css/profile.css' %}>
+    <link rel="icon" type="image/ico" href="{% static 'favicon.ico' %}">
+  </head>
+  <body>
+    <header class="">
+      <div class="logo-container">
+        <div class="logo">
+          <img src='{% static 'images/fb.png' %}' alt="logo">
+        </div>
+      </div>
+      <div class="search-bar">
+        <input type="text" name="" value="" placeholder="Search">
+      </div>
+      <div class="nav">
+        <ul>
+          <li>
+            <a href="{% url 'app:home' in_user.id %}"><i class="fa fa-home" aria-hidden="true"></i></a>
+          </li>
+          <li>
+            <a href="#"><i class="fa fa-play" aria-hidden="true"></i></a>
+          </li>
+          <li>
+            <a href="#"><i class="fa fa-users" aria-hidden="true"></i></a>
+          </li>
+        </ul>
+      </div>
+      <div class="profile">
+        <div class="profile-pic">
+          <img src="{{in_user_info.profile_pic.url}}" alt="">
+        </div>
+        <div class="username">
+          <h3>{{in_user.first_name}} {{in_user.last_name}}</h3>
+        </div>
+      </div>
+    </header>
+
+    <div class="menu">
+      <ul>
+        <li>
+          <a href="{% url 'app:profile' in_user.id in_user.id %}"><i class="fa fa-user" aria-hidden="true"></i> profile</a>
+        </li>
+        <li>
+          <a href="{% url 'app:user_logout' %}"><i class="fa fa-sign-out"  aria-hidden="true"></i>Logout</a>
+        </li>
+      </ul>
+
+    </div>
+
+    <section class="profile-container">
+      <div class="cover-pic edit">
+        {% if view_user_info.cover_pic %}
+        <img src="{{view_user_info.cover_pic.url}}" alt="">
+        {% else %}
+        <h1>No Cover Pic</h1>
+        {% endif %}
+        {% if in_user == view_user %}
+        <form method='post' enctype="multipart/form-data" id='cover_pic_form' action="{% url 'app:cover_pic_change' in_user.id %}">
+          {% csrf_token %}
+          <input type="file" name='cover_pic_sub' value='' id="cover_pic_sub">
+          <label for="cover_pic_sub">
+            <i class="fa fa-edit"></i>
+            Edit
+          </label>
+        </form>
+        {% endif %}
+      </div>
+
+      <div class="profile-picture edit">
+      {% if view_user_info.profile_pic %}
+      <img src="{{view_user_info.profile_pic.url}}" alt="">
+      {% else %}
+      <h1>No profile Pic</h1>
+      {% endif %}
+      {% if in_user == view_user %}
+        <form method='post' enctype="multipart/form-data" id="profile_img_form" action="{% url 'app:profile_img_change' in_user.id %}">
+          {% csrf_token %}
+          <input type="file" name='profile_img_sub' value='' id="profile_img_sub">
+          <label for="profile_img_sub">
+            <i class="fa fa-edit"></i>
+            Edit
+          </label>
+        </form>
+      {% endif %}
+      </div>
+
+      <div class="name_bio">
+        <h1>{{view_user.first_name}} {{view_user.last_name}} </h1>
+        <p>{{view_user_info.about}}</p>
+        {% if in_user == view_user %}
+        {% if view_user_info.about %}
+        <a onclick="addBio()" class="add_bio"> Change Bio</a>
+        {% else %}
+        <a onclick="addBio()" class="add_bio"> Add Bio</a>
+        {% endif %}
+        <form class="" action="{% url 'app:addbio' in_user.id %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <textarea name="body" rows="6" placeholder="Describe yourself"></textarea>
+            <button type="submit" name="add" class="add_btn">Add</button>
+            <button type="button" name="Cancel" onclick="noBio()" class="canc_btn">Cancel</button>
+        </form>
+        {% endif %}
+      </div>
+
+      <div class="timeline">
+        <h3>Timeline</h3>
+
+
+        {% for i in all_posts %}
+        <div class="post ">
+          <div class="post-maker">
+            <div class="profile-pic">
+              <img src='{{i.user_info.profile_pic.url}}' alt="">
+            </div>
+            <h1>{{i.user.first_name}}</h1>
+          </div>
+          <p>{{i.text}}</p>
+          {% if i.photo %}
+          <div class="post-img">
+            <img src={{i.photo.url}} alt="">
+          </div>
+          {% endif %}
+          {% if i.video %}
+          <div class="post-video">
+            <video src="{{i.video.url}}" controls loop>
+
+            </video>
+          </div>
+          {% endif %}
+          <div class="likes-comments" data-catid={{in_user.id}}>
+            <div class="like" data-catid={{i.id}}>
+              <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+              <h5 id="like{{i.id}}">Like ({{i.l}})</h5>
+            </div>
+
+            <div class="comment">
+              <form id="comment-form" method="post" enctype="multipart/form-data" data-catid={{i.id}}>
+                {% csrf_token %}
+                <input type="text" id="comment{{i.id}}" value="" placeholder="Comment">
+                <button type="submit" name="button">Post</button>
+              </form>
+            </div>
+
+          </div>
+          <span id="n-comment{{i.id}}">Comments {{i.c}}</span>
+          <div class="recent-comments" id="recent-comment{{i.id}}">
+            {% for c in all_comments %}
+               {% if c.post == i %}
+               <h4>{{c.user.first_name}} {{c.user.last_name}}</h4>
+               <p>{{c.body}}</p>
+               {% endif %}
+            {% endfor %}
+
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+
+    <script type="text/javascript" src={% static "js\home.js" %}></script>
+    <script type="text/javascript">
+      $(".like").click(function() {
+        var catid, user;
+        catid = $(this).attr("data-catid");
+        user = $(".likes-comments").attr('data-catid');
+        console.log(catid)
+        console.log(user)
+        $.ajax({
+          url: "/likepost/",
+          data: {
+            post_id: catid,
+            user_id: user,
+          },
+          success: function(data) {
+            var id = "like" + catid;
+            console.log(id)
+            console.log(document.getElementById(id));
+            document.getElementById(id).innerHTML = "Likes(" + data + ")";
+          }
+        })
+      })
+
+      $(document).on('submit',"#comment-form",function(e){
+        e.preventDefault();
+        var catid,user,body;
+        catid = $(this).attr('data-catid');
+        user = $('.likes-comments').attr('data-catid');
+        body = document.getElementById('comment'+catid).value;
+        //console.log(catid);
+        //console.log(user);
+        //console.log(body);
+        $.ajax(
+          {
+            url:"/comment/",
+            data:{
+              post_id:catid,
+              user_id:user,
+              body:body,
+            },
+            success:function(data){
+              console.log("n-comment"+catid)
+              console.log(  document.getElementById("n-comment"+catid))
+              document.getElementById("n-comment"+catid).innerHTML = "Comments("+data[3]+")";
+              document.getElementById("recent-comment"+catid).innerHTML = "<h4>"+data[0]+"  "+data[1]+"</h4><p>" + data[2]+"</p>"+document.getElementById("recent-comment"+catid).innerHTML;
+              document.getElementById('comment'+catid).value= "";
+            }
+          }
+        )
+
+      })
+    </script>
+  </body>
+</html>

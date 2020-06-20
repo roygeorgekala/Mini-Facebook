@@ -1,0 +1,72 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Mini Facebook-Sign Up/Login</title>
+    <link rel="stylesheet" href={% static 'css/login.css' %}>
+    <link rel="icon" type="image/ico" href="{% static 'favicon.ico' %}">
+  </head>
+  <body>
+    <div class="mistake">
+        <p> WRONG PASSWORD-USERNAME COMBO!!!!!!!</p>
+    </div>
+
+
+    <header class="">
+      <div class="logoname">
+        <h1>facebook</h1>
+      </div>
+      <div class="login_form">
+        <form class="" method="post" enctype="multipart/form-data" action="{% url 'app:user_login'  %}">
+          {% csrf_token %}
+          <div class="">
+          </div>
+          <div class="cred">
+            <span>Email</span>
+            <input type="email" name="email" value="">
+          </div>
+          <div class="cred">
+            <span>Password</span>
+            <input type="password" name="password" value="">
+          </div>
+          <div class="login_button">
+            <button type="submit" name="submit">Log In</button>
+          </div>
+        </form>
+      </div>
+      <div class="">
+      </div>
+    </header>
+  <section class="main">
+    <div class="connect ">
+      <p> Facebook helps people to connect around the world </p>
+      <img class="" src={% static 'images\login.png'  %} alt="Pic">
+    </div>
+    <div class=" registration">
+      <h1>Create a new Account</h1>
+      <p>Its Free and Easy</p>
+      <form class="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="r_one">
+          <input type="text" name="first_name" value="" placeholder="First Name">
+          <input type="text" name="last_name" value="" placeholder="Last Name">
+        </div>
+        <div class="r_two">
+            <input type="email" name="email" value="" placeholder="Email">
+            <input type="password" name="password" value="" placeholder="Password">
+            <label for="birthday">Birthday</label>
+            <input type="date" name="birthday" id="bday" value="" placeholder="Birthday">
+            <label for="gender">Gender</label>
+            <input type="text" name="gender" id="Gender" value="" placeholder="Gender">
+            <label for="image">Your Display Picture</label>
+            <input type="file" name="image" id="pic" value="" placeholder="Pic">
+            <p>By clicking Sign Up, you agree to our Terms, Data Policy and Cookie Policy. You may receive SMS notifications from us and can opt out at any time.</p>
+            <button type="submit" name="button">Sign Up</button>
+        </div>
+      </form>
+    </div>
+  </section>
+  </body>
+</html>
