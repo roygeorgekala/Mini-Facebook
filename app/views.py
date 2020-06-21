@@ -17,7 +17,10 @@ def signup(request):
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         birthday = request.POST.get('birthday')
-        image = request.FILES['image']
+        if(request.FILES=={}):
+            image='default-profile.png'
+        else:
+            image = request.FILES['image']
         gender = request.POST.get('gender')
         email = request.POST.get('email')
         password = request.POST.get('password')

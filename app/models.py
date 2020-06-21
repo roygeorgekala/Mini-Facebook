@@ -1,14 +1,14 @@
 from django.db import models
-from django.utils import timezone
+from django.utils.timezone import now
 from django.contrib.auth.models import User
 
 # Create your models here.
 class userinfo(models.Model):
     user = models.OneToOneField(User , on_delete=models.CASCADE)
-    birthday = models.DateField(default = timezone.now)
+    birthday = models.DateField(default = now)
     gender = models.CharField(max_length=10, default='Male')
     about = models.CharField(max_length=200, default = " ")
-    profile_pic = models.ImageField(upload_to='profile_pic/',blank= True)
+    profile_pic = models.ImageField(upload_to='profile_pic/',default = None)
     cover_pic = models.ImageField(upload_to='cover_pic/')
 
     def __str__(self):
