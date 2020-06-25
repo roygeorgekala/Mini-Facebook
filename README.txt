@@ -1,0 +1,1 @@
+This is a project undertaken by Roy George to learn Django Web Development
